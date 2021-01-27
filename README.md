@@ -1,7 +1,7 @@
 # designious-library-lumise-wp
 Designious Library Lumise Addon WP
 
-=== Designious Library Lumise Addon ===
+=== Designious Library Lumise Addon for WooCommerce ===
 Contributors: designious
 Tags: design library,lumise,graphic design,ecommerce,woocommerce,store,sell,t-shirt design
 Requires at least: 3.5.0

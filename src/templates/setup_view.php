@@ -38,7 +38,9 @@ $canInstall       = ( ! $designious_library_setup->is_addon_installed() || $hasU
 	<?php if ( $designious_library_setup->isInstallAttempt() ): ?>
         <p>
 			<?php if ( ! $designious_library_setup->hasInstallError() ): ?>
-                <strong>Addon installed. Please go to Lumise > Addons to activate it.</strong>
+                <strong>Latest addon version installed: <?php echo $designious_library_setup->get_addon_version(); ?></strong>
+                <br/>
+                <strong>Please go to Lumise > Addons to activate it.</strong>
 			<?php else: ?>
                 <strong>There was an error installing the addon.</strong>
 			<?php endif; ?>
@@ -47,11 +49,13 @@ $canInstall       = ( ! $designious_library_setup->is_addon_installed() || $hasU
 	<?php if ( $canInstall ) : ?>
         <form action="" method="post">
             <input type="hidden" name="designious-library-setup" value="true"/>
+            <?php echo wp_nonce_field('designious-library-setup') ?>
             <button type="submit" class="button button-primary">
                 Install Designious Library Addon <?php echo $latestVersion['tag']; ?> for Lumise
             </button>
         </form>
-	<?php elseif ( $hasWoo && $hasLumise && ! empty( $installedVersion ) ): ?>
-        <p><strong>Addon already installed.</strong></p>
+	<?php elseif ( $hasWoo && $hasLumise && ! empty( $installedVersion && ! $designious_library_setup->isInstallAttempt() ) ): ?>
+        <p><strong>Latest addon version already
+                installed: <?php echo $designious_library_setup->get_addon_version(); ?></strong></p>
 	<?php endif; ?>
 </div>

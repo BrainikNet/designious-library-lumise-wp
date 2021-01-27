@@ -27,6 +27,20 @@ class DesigniousLibrarySetup {
 			'admin_print_styles-designious-library_page_designious_library_setup',
 			[ &$this, 'register_admin_css' ]
 		);
+		add_action( 'admin_init', [ &$this, 'check_request' ], 20 );
+	}
+
+	public function check_request() {
+		if ( $_POST['designious-library-setup'] && current_user_can( 'activate_plugins' ) ) {
+			check_admin_referer( 'designious-library-setup' );
+			$this->installAttempt = true;
+			if ( wp_verify_nonce( $_POST['_wpnonce'], 'designious-library-setup' ) ) {
+				$this->install_latest_addon_version();
+			} else {
+				error_log( 'Cannot install latest addon version: Invalid nonce.' );
+				$this->installError = true;
+			}
+		}
 	}
 
 	public function isInstallAttempt() {
@@ -41,7 +55,7 @@ class DesigniousLibrarySetup {
 		add_menu_page(
 			'Designious Library',
 			'Designious Library',
-			'manage_options',
+			'activate_plugins',
 			self::MENU_SLUG,
 			''
 		);
@@ -49,7 +63,7 @@ class DesigniousLibrarySetup {
 			'designious_library',
 			'Designious Library Setup',
 			'Setup',
-			'manage_options',
+			'activate_plugins',
 			self::MENU_SLUG . '_setup',
 			[ &$this, 'render_setup_view' ]
 		);
@@ -85,11 +99,6 @@ class DesigniousLibrarySetup {
 		if ( $key !== null ) {
 			unset( $submenu[ self::MENU_SLUG ][ $key ] );
 		}
-	}
-
-	public function install() {
-		$this->installAttempt = true;
-		$this->install_latest_addon_version();
 	}
 
 	private function install_latest_addon_version() {
@@ -220,7 +229,3 @@ class DesigniousLibrarySetup {
 }
 
 $GLOBALS['designious_library_setup'] = new DesigniousLibrarySetup();
-
-if ( $_POST['designious-library-setup'] ) {
-	$GLOBALS['designious_library_setup']->install();
-}
